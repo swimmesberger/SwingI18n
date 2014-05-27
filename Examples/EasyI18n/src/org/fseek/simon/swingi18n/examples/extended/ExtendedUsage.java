@@ -63,7 +63,7 @@ public class ExtendedUsage extends I18nFrame {
                 //dynamically setting the name is working too
                 //(only if the component already had a name before)
                 //if the component had no name before you need to use
-                //I18nController.getI18nSwingUtility().applyI18n(checkbox);
+                //bundleController.getI18nSwingUtility().applyI18n(checkbox);
                 if (checkbox.getName().equals("changeable")) {
                     checkbox.setName("changedTo");
                 } else {
