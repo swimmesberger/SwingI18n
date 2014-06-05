@@ -49,6 +49,20 @@ public class I18nController {
         }
         return globalController.getBundles();
     }
+    
+    public static void addResource(String bundlePath){
+        if (globalController == null) {
+            throw new UnsupportedOperationException("You have to call init(bundlePath) first !");
+        }
+        globalController.addPath(bundlePath);
+    }
+    
+    public static void removeResource(String bundlePath){
+        if (globalController == null) {
+            throw new UnsupportedOperationException("You have to call init(bundlePath) first !");
+        }
+        globalController.removePath(bundlePath);
+    }
 
     public static I18nUtil getI18nSwingUtility() {
         if (globalController == null) {

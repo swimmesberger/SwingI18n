@@ -5,6 +5,7 @@ import java.awt.Container;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -82,6 +83,12 @@ public class I18nUtil {
         }
         this.bundle.add(bundle);
         loadBundle(bundle);
+    }
+    
+    public void removeBundle(ResourceBundle bundle){
+        if(this.bundle == null)return;
+        this.bundle.remove(bundle);
+        loadBundles(this.bundle);
     }
 
     public void applyI18nBundle(Container container) {
@@ -304,7 +311,7 @@ public class I18nUtil {
         return locales.toArray(new Locale[locales.size()]);
     }
     
-    public static Locale[] getLocales(ArrayList<String> resourcePaths) {
+    public static Locale[] getLocales(Collection<String> resourcePaths) {
         HashSet<Locale> locales = new HashSet<>();
         for(String path : resourcePaths){
             addLocales(path, locales);
