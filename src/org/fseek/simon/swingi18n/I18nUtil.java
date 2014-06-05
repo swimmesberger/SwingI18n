@@ -63,6 +63,11 @@ public class I18nUtil {
             return;
         }
         this.bundle.clear();
+        clearCache();
+    }
+    
+    protected void clearCache(){
+        this.i18nComponentMapping.clear();
     }
 
     public ResourceBundle[] getBundles() {
@@ -88,6 +93,7 @@ public class I18nUtil {
     public void removeBundle(ResourceBundle bundle){
         if(this.bundle == null)return;
         this.bundle.remove(bundle);
+        clearCache();
         loadBundles(this.bundle);
     }
 
