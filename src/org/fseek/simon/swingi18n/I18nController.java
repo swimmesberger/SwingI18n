@@ -2,7 +2,6 @@ package org.fseek.simon.swingi18n;
 
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 /**
  *
@@ -42,13 +41,6 @@ public class I18nController {
             return globalController.getLocale();
         }
     }
-
-    public static ResourceBundle[] getResources() {
-        if (globalController == null) {
-            throw new UnsupportedOperationException("You have to call init(bundlePath) first !");
-        }
-        return globalController.getBundles();
-    }
     
     public static void addResource(String bundlePath){
         if (globalController == null) {
@@ -57,11 +49,25 @@ public class I18nController {
         globalController.addPath(bundlePath);
     }
     
+    public static void addResource(I18nBundle bundle){
+        if (globalController == null) {
+            throw new UnsupportedOperationException("You have to call init(bundlePath) first !");
+        }
+        globalController.addPath(bundle);
+    }
+    
     public static void removeResource(String bundlePath){
         if (globalController == null) {
             throw new UnsupportedOperationException("You have to call init(bundlePath) first !");
         }
         globalController.removePath(bundlePath);
+    }
+    
+    public static void removeResource(I18nBundle bundle){
+        if (globalController == null) {
+            throw new UnsupportedOperationException("You have to call init(bundlePath) first !");
+        }
+        globalController.removePath(bundle);
     }
 
     public static I18nUtil getI18nSwingUtility() {

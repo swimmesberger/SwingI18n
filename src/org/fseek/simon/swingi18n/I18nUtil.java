@@ -46,11 +46,9 @@ public class I18nUtil {
     }
 
     private HashMap<String, ArrayList<I18nKey>> i18nComponentMapping;
-    private ArrayList<ResourceBundle> bundle;
     private final I18nPropertyChangeListener nameChangedListener = new I18nPropertyChangeListener();
 
     public I18nUtil(ArrayList<ResourceBundle> bundle) {
-        this.bundle = bundle;
         loadBundles(bundle);
     }
 
@@ -59,10 +57,6 @@ public class I18nUtil {
     }
 
     public void clearBundles() {
-        if (this.bundle == null) {
-            return;
-        }
-        this.bundle.clear();
         clearCache();
     }
     
@@ -70,31 +64,12 @@ public class I18nUtil {
         this.i18nComponentMapping.clear();
     }
 
-    public ResourceBundle[] getBundles() {
-        return this.bundle.toArray(new ResourceBundle[this.bundle.size()]);
-    }
-
     public void addBundles(ArrayList<ResourceBundle> bundles) {
-        if (this.bundle == null) {
-            this.bundle = new ArrayList<>();
-        }
-        this.bundle.addAll(bundles);
-
+        loadBundles(bundles);
     }
 
     public void addBundle(ResourceBundle bundle) {
-        if (this.bundle == null) {
-            this.bundle = new ArrayList<>();
-        }
-        this.bundle.add(bundle);
         loadBundle(bundle);
-    }
-    
-    public void removeBundle(ResourceBundle bundle){
-        if(this.bundle == null)return;
-        this.bundle.remove(bundle);
-        clearCache();
-        loadBundles(this.bundle);
     }
 
     public void applyI18nBundle(Container container) {
@@ -159,6 +134,19 @@ public class I18nUtil {
                 ArrayList<I18nKey> keyList = new ArrayList<>();
                 keyList.add(i18nKey);
                 this.i18nComponentMapping.put(key, keyList);
+            }
+        }
+    }
+    
+    protected void removeBundle(ResourceBundle bundle){
+        if (this.i18nComponentMapping == null) return;
+        Enumeration keys = bundle.getKeys();
+        while (keys.hasMoreElements()) {
+            String key = (String) keys.nextElement();
+            I18nKey i18nKey = new I18nKey(key, bundle.getString(key));
+            key = i18nKey.getKey();
+            if (this.i18nComponentMapping.containsKey(key)) {
+                this.i18nComponentMapping.remove(key);
             }
         }
     }
@@ -324,7 +312,15 @@ public class I18nUtil {
         }
         return locales.toArray(new Locale[locales.size()]);
     }
-
+    
+    public static Locale[] getLocalesBundle(Collection<I18nBundle> resourcePaths) {
+        HashSet<Locale> locales = new HashSet<>();
+        for(I18nBundle path : resourcePaths){
+            addLocales(path.getPath(), locales);
+        }
+        return locales.toArray(new Locale[locales.size()]);
+    }
+    
     protected static class I18nKey {
 
         private final String value;
