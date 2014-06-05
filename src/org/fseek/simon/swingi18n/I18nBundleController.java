@@ -105,6 +105,7 @@ public class I18nBundleController {
         } else {
             this.i18nSwingUtil.addBundle(bundle);
         }
+        this.bundlePath.add(bundlePath);
     }
 
     protected void removeBundle(ResourceBundle bundle) {
