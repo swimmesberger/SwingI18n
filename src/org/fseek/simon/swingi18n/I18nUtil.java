@@ -7,6 +7,8 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -29,6 +31,7 @@ import javax.swing.border.TitledBorder;
 public class I18nUtil {
 
     private class I18nPropertyChangeListener implements PropertyChangeListener {
+
         public I18nPropertyChangeListener() {
         }
 
@@ -42,17 +45,43 @@ public class I18nUtil {
     }
 
     private HashMap<String, ArrayList<I18nKey>> i18nComponentMapping;
-    private ResourceBundle bundle;
+    private ArrayList<ResourceBundle> bundle;
     private final I18nPropertyChangeListener nameChangedListener = new I18nPropertyChangeListener();
 
-    public I18nUtil(ResourceBundle bundle) {
+    public I18nUtil(ArrayList<ResourceBundle> bundle) {
         this.bundle = bundle;
-        initI18nComponentMapping();
+        loadBundles(bundle);
     }
 
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
-        initI18nComponentMapping();
+    public I18nUtil(ResourceBundle bundle) {
+        addBundle(bundle);
+    }
+
+    public void clearBundles() {
+        if (this.bundle == null) {
+            return;
+        }
+        this.bundle.clear();
+    }
+
+    public ResourceBundle[] getBundles() {
+        return this.bundle.toArray(new ResourceBundle[this.bundle.size()]);
+    }
+
+    public void addBundles(ArrayList<ResourceBundle> bundles) {
+        if (this.bundle == null) {
+            this.bundle = new ArrayList<>();
+        }
+        this.bundle.addAll(bundles);
+
+    }
+
+    public void addBundle(ResourceBundle bundle) {
+        if (this.bundle == null) {
+            this.bundle = new ArrayList<>();
+        }
+        this.bundle.add(bundle);
+        loadBundle(bundle);
     }
 
     public void applyI18nBundle(Container container) {
@@ -82,7 +111,7 @@ public class I18nUtil {
             if (k.getType() != null) {
                 flag = applyTypeI18n(component, k);
             }
-            if(flag){
+            if (flag) {
                 initUpdateNotification(component);
             }
         }
@@ -102,9 +131,11 @@ public class I18nUtil {
         c.addPropertyChangeListener("name", nameChangedListener);
     }
 
-    protected void initI18nComponentMapping() {
-        this.i18nComponentMapping = new HashMap<>();
-        Enumeration keys = this.bundle.getKeys();
+    protected void loadBundle(ResourceBundle bundle) {
+        if (this.i18nComponentMapping == null) {
+            this.i18nComponentMapping = new HashMap<>();
+        }
+        Enumeration keys = bundle.getKeys();
         while (keys.hasMoreElements()) {
             String key = (String) keys.nextElement();
             I18nKey i18nKey = new I18nKey(key, bundle.getString(key));
@@ -116,6 +147,12 @@ public class I18nUtil {
                 keyList.add(i18nKey);
                 this.i18nComponentMapping.put(key, keyList);
             }
+        }
+    }
+
+    protected void loadBundles(ArrayList<ResourceBundle> bundles) {
+        for (ResourceBundle b : bundles) {
+            loadBundle(b);
         }
     }
 
@@ -229,6 +266,50 @@ public class I18nUtil {
             }
         }
         return mapping;
+    }
+    
+    protected static HashSet<Locale> addLocales(String resourcePath, HashSet<Locale> locales){
+        String[] files = ResourceUtil.listFiles(resourcePath);
+        if (files != null) {
+            for (String s : files) {
+                if (s.contains("_")) {
+                    String[] split = s.split("_");
+                    String locale = s.substring(split[0].length() + 1, s.length());
+                    locale = locale.substring(0, locale.indexOf('.'));
+                    split = locale.split("_");
+                    if (split.length == 1) {
+                        locales.add(new Locale(split[0]));
+                    } else if (split.length == 2) {
+                        locales.add(new Locale(split[0], split[1]));
+                    } else if (split.length > 2) {
+                        locales.add(new Locale(split[0], split[1], split[2]));
+                    }
+                }
+            }
+        }
+        return locales;
+    }
+
+    public static Locale[] getLocales(String resourcePath) {
+        HashSet<Locale> locales = new HashSet<>();
+        addLocales(resourcePath, locales);
+        return locales.toArray(new Locale[locales.size()]);
+    }
+
+    public static Locale[] getLocales(String[] resourcePaths) {
+        HashSet<Locale> locales = new HashSet<>();
+        for(String path : resourcePaths){
+            addLocales(path, locales);
+        }
+        return locales.toArray(new Locale[locales.size()]);
+    }
+    
+    public static Locale[] getLocales(ArrayList<String> resourcePaths) {
+        HashSet<Locale> locales = new HashSet<>();
+        for(String path : resourcePaths){
+            addLocales(path, locales);
+        }
+        return locales.toArray(new Locale[locales.size()]);
     }
 
     protected static class I18nKey {

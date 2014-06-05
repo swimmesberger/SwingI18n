@@ -512,7 +512,7 @@ public class I18nDialog extends JDialog implements I18nController.I18nChangeList
             return;
         }
         I18nController.addLocaleChangeListener(this);
-        this.onLocaleChange(I18nController.getCurrentLocale());
+        this.onLocaleChange(I18nController.getLocale());
         i18nListening = true;
     }
 

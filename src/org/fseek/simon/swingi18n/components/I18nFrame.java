@@ -118,7 +118,7 @@ public class I18nFrame extends JFrame implements I18nController.I18nChangeListen
     protected void initI18n() {
         if(i18nListening)return;
         I18nController.addLocaleChangeListener(this);
-        this.onLocaleChange(I18nController.getCurrentLocale());
+        this.onLocaleChange(I18nController.getLocale());
         i18nListening = true;
     }
 

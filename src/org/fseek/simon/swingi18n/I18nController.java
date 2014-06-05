@@ -35,25 +35,19 @@ public class I18nController {
      * Returns the currently set Locale
      * If no locale was set manually the default Locale is returned
      */
-    public static Locale getCurrentLocale() {
-        return currentLocale;
+    public static Locale getLocale() {
+        if(globalController == null){
+            return currentLocale;
+        }else{
+            return globalController.getLocale();
+        }
     }
 
-    /**
-     * Returns the locale of the current bundle
-     */
-    public static Locale getBundleLocale() {
+    public static ResourceBundle[] getResources() {
         if (globalController == null) {
             throw new UnsupportedOperationException("You have to call init(bundlePath) first !");
         }
-        return globalController.getBundle().getLocale();
-    }
-
-    public static ResourceBundle getCurrentResources() {
-        if (globalController == null) {
-            throw new UnsupportedOperationException("You have to call init(bundlePath) first !");
-        }
-        return globalController.getBundle();
+        return globalController.getBundles();
     }
 
     public static I18nUtil getI18nSwingUtility() {
@@ -61,6 +55,13 @@ public class I18nController {
             throw new UnsupportedOperationException("You have to call init(bundlePath) first !");
         }
         return globalController.getI18nSwingUtility();
+    }
+    
+    public static Locale[] getSupportedLocales(){
+        if (globalController == null) {
+            throw new UnsupportedOperationException("You have to call init(bundlePath) first !");
+        }
+        return globalController.getSupportedLocales();
     }
 
     public static void setLocale(Locale locale) {

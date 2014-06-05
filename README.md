@@ -39,7 +39,7 @@ Setup:
     public class MyFrame extends I18nFrame{
         private final I18nBundleController bundleController;
         public MyFrame() {
-            bundleController = new I18nBundleController("org.example.lang.MyBundle1", I18nController.getCurrentLocale());
+            bundleController = new I18nBundleController("org.example.lang.MyBundle1", I18nController.getLocale());
             initComponents();
         }
         @Override

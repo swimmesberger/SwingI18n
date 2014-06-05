@@ -26,7 +26,6 @@ import org.fseek.simon.swingi18n.components.I18nFrame;
  * @author Simon Wimmesberger
  */
 public class SimpleUsage extends I18nFrame {
-    private static final Locale[] supportedLocales = {Locale.ENGLISH, Locale.GERMAN};
     public SimpleUsage() {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         //init all the components in constructor, because the default behaviour translates all components AFTER the frame is VISIBLE
@@ -78,7 +77,7 @@ public class SimpleUsage extends I18nFrame {
         menuBar.add(exampleMenu);
         
         final JComboBox<Locale> languageSwitch = new JComboBox<>();
-        for(Locale l : supportedLocales){
+        for(Locale l : I18nController.getSupportedLocales()){
             languageSwitch.addItem(l);
         }
         languageSwitch.addItemListener(new ItemListener() {
@@ -89,7 +88,7 @@ public class SimpleUsage extends I18nFrame {
                 }
             }
         });
-        languageSwitch.setSelectedItem(I18nController.getBundleLocale());
+        languageSwitch.setSelectedItem(I18nController.getLocale());
         
         Container contentPane = getContentPane();
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));

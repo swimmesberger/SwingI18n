@@ -28,14 +28,11 @@ import org.fseek.simon.swingi18n.components.I18nFrame;
  * @author Simon Wimmesberger
  */
 public class ExtendedUsage extends I18nFrame {
-
-    private static final Locale[] supportedLocales = {Locale.ENGLISH, Locale.GERMAN};
-
     private final I18nBundleController bundleController;
 
     public ExtendedUsage() {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        bundleController = new I18nBundleController("org.fseek.simon.swingi18n.examples.extended.lang.ExtendedBundle1", I18nController.getCurrentLocale());
+        bundleController = new I18nBundleController("org.fseek.simon.swingi18n.examples.extended.lang.ExtendedBundle1", I18nController.getLocale());
         //init all the components in constructor, because the default behaviour translates all components AFTER the frame is VISIBLE
         initComponents();
     }
@@ -91,6 +88,7 @@ public class ExtendedUsage extends I18nFrame {
         menuBar.add(exampleMenu);
 
         final JComboBox<Locale> languageSwitch = new JComboBox<>();
+        Locale[] supportedLocales = bundleController.getSupportedLocales();
         for (Locale l : supportedLocales) {
             languageSwitch.addItem(l);
         }
@@ -103,7 +101,9 @@ public class ExtendedUsage extends I18nFrame {
             }
         });
         //here we use the bundleController to determine the bundle locale
-        languageSwitch.setSelectedItem(bundleController.getBundle().getLocale());
+        Locale setLang = bundleController.getLocale();
+        //we just use the language and ignore country or variant
+        languageSwitch.setSelectedItem(new Locale(setLang.getLanguage()));
 
         Container contentPane = getContentPane();
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
@@ -133,7 +133,7 @@ public class ExtendedUsage extends I18nFrame {
 
         public ExtendedDialog() {
             super();
-            bundleController = new I18nBundleController("org.fseek.simon.swingi18n.examples.extended.lang.ExtendedBundle2", I18nController.getCurrentLocale());
+            bundleController = new I18nBundleController("org.fseek.simon.swingi18n.examples.extended.lang.ExtendedBundle2", I18nController.getLocale());
             initComponents();
         }
 
