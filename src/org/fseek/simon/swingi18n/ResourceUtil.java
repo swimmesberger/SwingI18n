@@ -18,6 +18,23 @@ import java.util.logging.Logger;
  * @author Simon Wimmesberger
  */
 public class ResourceUtil {
+    public static ClassLoader getCallerClassLoader(){
+        Class<?> caller = getCaller();
+        if(caller != null){
+            return caller.getClassLoader();
+        }
+        return null;
+    }
+    public static Class<?> getCaller(){
+        try {
+            String callerName = getCallerClassName();
+            Class<?> caller = Class.forName(callerName);
+            return caller;
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ResourceUtil.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 
     /**
      * Assume the caller class is the class path to be searched
