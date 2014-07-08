@@ -22,8 +22,12 @@ public class I18nController {
     }
 
     public static void init(String bundlePath) {
+        init(bundlePath, ResourceUtil.getCallerClassLoader());
+    }
+    
+    public static void init(String bundlePath, ClassLoader cl) {
         try {
-            globalController = new I18nBundleController(bundlePath);
+            globalController = new I18nBundleController(bundlePath, cl);
             setLocale(Locale.getDefault());
         } catch (IllegalArgumentException ex) {
             throw new RuntimeException("No localizations found !");
@@ -49,6 +53,10 @@ public class I18nController {
         globalController.addPath(bundlePath);
     }
     
+    public static void addResource(String bundlePath, ClassLoader cl){
+        addResource(new I18nBundle(bundlePath, cl));
+    }
+    
     public static void addResource(I18nBundle bundle){
         if (globalController == null) {
             throw new UnsupportedOperationException("You have to call init(bundlePath) first !");
@@ -61,6 +69,10 @@ public class I18nController {
             throw new UnsupportedOperationException("You have to call init(bundlePath) first !");
         }
         globalController.removePath(bundlePath);
+    }
+    
+    public static void removeResource(String bundlePath, ClassLoader cl){
+        removeResource(new I18nBundle(bundlePath, cl));
     }
     
     public static void removeResource(I18nBundle bundle){
@@ -82,6 +94,13 @@ public class I18nController {
             throw new UnsupportedOperationException("You have to call init(bundlePath) first !");
         }
         return globalController.getSupportedLocales();
+    }
+    
+    public static String getText(String key){
+        if (globalController == null) {
+            throw new UnsupportedOperationException("You have to call init(bundlePath) first !");
+        }
+        return globalController.getText(key);
     }
 
     public static void setLocale(Locale locale) {

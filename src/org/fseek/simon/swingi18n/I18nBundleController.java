@@ -24,6 +24,17 @@ public class I18nBundleController {
         this.bundlePath.add(new I18nBundle(bundlePath));
         setLocale(locale);
     }
+    
+        public I18nBundleController(String bundlePath, ClassLoader cl) {
+        this.bundlePath = new HashSet<>();
+        this.bundlePath.add(new I18nBundle(bundlePath, cl));
+    }
+
+    public I18nBundleController(String bundlePath, Locale locale, ClassLoader cl) {
+        this.bundlePath = new HashSet<>();
+        this.bundlePath.add(new I18nBundle(bundlePath, cl));
+        setLocale(locale);
+    }
 
     public I18nUtil getI18nSwingUtility() {
         return i18nSwingUtil;
@@ -77,6 +88,11 @@ public class I18nBundleController {
 
     public ResourceBundle removePath(String bundlePath) {
         return removePath(findBundle(bundlePath));
+    }
+    
+    public String getText(String key){
+        if(this.i18nSwingUtil == null)return null;
+        return this.i18nSwingUtil.getText(key);
     }
 
     protected I18nBundle findBundle(String bundlePath) {

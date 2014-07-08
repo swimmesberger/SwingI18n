@@ -104,6 +104,13 @@ public class I18nUtil {
             }
         }
     }
+    
+    public String getText(String key){
+        if(i18nComponentMapping == null)return key;
+        ArrayList<I18nKey> list = i18nComponentMapping.get(key);
+        if(list == null || list.isEmpty())return key;
+        return list.get(0).getValue();
+    }
 
     protected void initUpdateNotification(Component c) {
         //remove old listener
