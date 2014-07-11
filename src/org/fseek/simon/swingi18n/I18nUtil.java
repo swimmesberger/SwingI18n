@@ -14,6 +14,8 @@ import java.util.ResourceBundle;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -46,6 +48,7 @@ public class I18nUtil {
     }
 
     private HashMap<String, ArrayList<I18nKey>> i18nComponentMapping;
+    private ArrayList<SwingI18nListener> swingI18nListener;
     private final I18nPropertyChangeListener nameChangedListener = new I18nPropertyChangeListener();
 
     public I18nUtil(ArrayList<ResourceBundle> bundle) {
@@ -96,8 +99,18 @@ public class I18nUtil {
 
         for (I18nKey k : keyList) {
             boolean flag = applyI18n(component, k);
+            if(this.swingI18nListener != null){
+                for(SwingI18nListener lis : this.swingI18nListener){
+                    flag = lis.applyI18n(component, k);
+                }
+            }
             if (k.getType() != null) {
                 flag = applyTypeI18n(component, k);
+                if(this.swingI18nListener != null){
+                    for(SwingI18nListener lis : this.swingI18nListener){
+                        flag = lis.applyTypeI18n(component, k);
+                    }
+                }
             }
             if (flag) {
                 initUpdateNotification(component);
@@ -163,6 +176,18 @@ public class I18nUtil {
             loadBundle(b);
         }
     }
+    
+    public void addSwingI18nListener(SwingI18nListener lis){
+        if(this.swingI18nListener == null){
+            this.swingI18nListener = new ArrayList<>();
+        }
+        this.swingI18nListener.add(lis);
+    }
+    
+    public boolean removeSwingI18nListener(SwingI18nListener lis){
+        if(this.swingI18nListener == null)return false;
+        return this.swingI18nListener.remove(lis);
+    }
 
     protected static boolean applyI18n(Component c, I18nKey key) {
         boolean flag = false;
@@ -200,6 +225,14 @@ public class I18nUtil {
         } else if (c instanceof JMenuItem) {
             JMenuItem menuItem = (JMenuItem) c;
             menuItem.setText(key.getValue());
+            flag = true;
+        } else if(c instanceof JDialog){
+            JDialog dialog = (JDialog)c;
+            dialog.setTitle(key.getValue());
+            flag = true;
+        } else if(c instanceof JFrame){
+            JFrame frame = (JFrame)c;
+            frame.setTitle(key.getValue());
             flag = true;
         }
         return flag;
@@ -244,6 +277,7 @@ public class I18nUtil {
     protected static HashMap<String, ArrayList<Component>> getComponentNameMapping(Container container) {
         HashMap<String, ArrayList<Component>> mapping = new HashMap<>();
         mapping = addComponentNameMapping(mapping, container);
+        mapping = addComponentName(mapping, container);
         return mapping;
     }
 
@@ -328,7 +362,7 @@ public class I18nUtil {
         return locales.toArray(new Locale[locales.size()]);
     }
     
-    protected static class I18nKey {
+    public static class I18nKey {
 
         private final String value;
         private String key;
@@ -372,5 +406,10 @@ public class I18nUtil {
         public String getValue() {
             return value;
         }
+    }
+    
+    public static interface SwingI18nListener{
+        public boolean applyTypeI18n(Component c, I18nKey key);
+        public boolean applyI18n(Component c, I18nKey key);
     }
 }

@@ -7,13 +7,14 @@ import java.awt.Window;
 import java.util.Locale;
 import javax.swing.JDialog;
 import org.fseek.simon.swingi18n.I18nController;
+import org.fseek.simon.swingi18n.I18nable;
 
 /**
  * The default behaviour inits the Dialog when it gets visible
  *
  * @author Simon Wimmesberger
  */
-public class I18nDialog extends JDialog implements I18nController.I18nChangeListener {
+public class I18nDialog extends JDialog implements I18nController.I18nChangeListener, I18nable {
 
     private boolean i18nListening = false;
     private Locale currentLocale;
@@ -530,5 +531,10 @@ public class I18nDialog extends JDialog implements I18nController.I18nChangeList
     protected void i18nApplyBundle(Locale locale){
         //Use global BundleController
         I18nController.getI18nSwingUtility().applyI18nBundle(this);
+    }
+
+    @Override
+    public void setLocalizedText(String text) {
+        setTitle(text);
     }
 }

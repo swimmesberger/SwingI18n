@@ -5,12 +5,13 @@ import java.awt.HeadlessException;
 import java.util.Locale;
 import javax.swing.JFrame;
 import org.fseek.simon.swingi18n.I18nController;
+import org.fseek.simon.swingi18n.I18nable;
 
 /**
  * The default behaviour inits the Frame when it gets visible
  * @author Simon Wimmesberger
  */
-public class I18nFrame extends JFrame implements I18nController.I18nChangeListener {
+public class I18nFrame extends JFrame implements I18nController.I18nChangeListener, I18nable {
     private boolean i18nListening = false;
     private Locale currentLocale;
     
@@ -136,5 +137,10 @@ public class I18nFrame extends JFrame implements I18nController.I18nChangeListen
     protected void i18nApplyBundle(Locale locale){
         //Use global BundleController
         I18nController.getI18nSwingUtility().applyI18nBundle(this);
+    }
+
+    @Override
+    public void setLocalizedText(String text) {
+        this.setTitle(text);
     }
 }

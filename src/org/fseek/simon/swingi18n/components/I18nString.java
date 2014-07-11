@@ -17,4 +17,8 @@ public class I18nString{
     public String toString() {
         return I18nController.getText(this.key);
     }
+
+    public String getKey() {
+        return key;
+    }
 }
