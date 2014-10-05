@@ -9,7 +9,7 @@ SwingI18n is a easy to use swing internationalisation library.
 ## Usage:
 
 ### Simple Init:
-The most easy approch to do internationalisation with SwingI18n.
+The easiest approch to do internationalisation with SwingI18n.
 Initilize the localization handler
 ```java
     I18nController.init("org.example.lang.MyBundle");
